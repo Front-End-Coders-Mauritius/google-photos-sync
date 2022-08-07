@@ -5,14 +5,17 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const timelinerRepo = "./timeliner_repo"
+
 func main() {
 	log.Println("Opening database...")
 
-	db, err := sql.Open("sqlite3", "./timeliner_repo/index.db")
+	db, err := sql.Open("sqlite3", timelinerRepo+"/index.db")
 	if err != nil {
 		log.Fatalf("Open database: %v", err)
 	}
@@ -38,6 +41,10 @@ func main() {
 		)
 		if err = rows.Scan(&albumName, &photoPath); err != nil {
 			log.Fatal(err)
+		}
+
+		if _, err := os.Stat(timelinerRepo + "/" + photoPath); err != nil {
+			continue
 		}
 
 		photos[albumName] = append(photos[albumName], photoPath)
