@@ -52,7 +52,7 @@ func main() {
 		}
 
 		fullPhotoPath := filepath.Join(timelinerRepo, photoPath)
-		if _, err := os.Stat(fullPhotoPath); err != nil {
+		if _, err = os.Stat(fullPhotoPath); err != nil {
 			continue
 		}
 
@@ -63,7 +63,7 @@ func main() {
 		}
 
 		fullDstPhotoDir := filepath.Dir(filepath.Join(timelinerRepo, "processed", photoPath))
-		if err := os.MkdirAll(fullDstPhotoDir, os.ModePerm); err != nil {
+		if err = os.MkdirAll(fullDstPhotoDir, os.ModePerm); err != nil {
 			errs = multierr.Append(errs, fmt.Errorf("create directory structure: %w", err))
 			continue
 		}
@@ -77,13 +77,13 @@ func main() {
 			continue
 		}
 
-		if err := webpbin.Encode(f, img); err != nil {
+		if err = webpbin.Encode(f, img); err != nil {
 			f.Close()
 			errs = multierr.Append(errs, fmt.Errorf("save webp image: %w", err))
 			continue
 		}
 
-		if err := f.Close(); err != nil {
+		if err = f.Close(); err != nil {
 			errs = multierr.Append(errs, fmt.Errorf("close webp image: %w", err))
 			continue
 		}
