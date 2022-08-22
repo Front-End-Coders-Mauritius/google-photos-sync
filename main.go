@@ -58,13 +58,13 @@ func main() {
 
 		img, err := imaging.Open(fullPhotoPath)
 		if err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("open image: %w", err))
+			errs = multierr.Append(errs, fmt.Errorf("open image '%s': %w", photoID, err))
 			continue
 		}
 
 		fullDstPhotoDir := filepath.Dir(filepath.Join(timelinerRepo, "processed", photoPath))
 		if err = os.MkdirAll(fullDstPhotoDir, os.ModePerm); err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("create directory structure: %w", err))
+			errs = multierr.Append(errs, fmt.Errorf("create directory structure: %w", photoID, err))
 			continue
 		}
 
@@ -73,18 +73,18 @@ func main() {
 		fullProcessedPhotoPath := filepath.Join(fullDstPhotoDir, photoID+".webp")
 		f, err := os.Create(fullProcessedPhotoPath)
 		if err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("create webp image: %w", err))
+			errs = multierr.Append(errs, fmt.Errorf("create webp image '%s': %w", photoID, err))
 			continue
 		}
 
 		if err = webpbin.Encode(f, img); err != nil {
 			f.Close()
-			errs = multierr.Append(errs, fmt.Errorf("save webp image: %w", err))
+			errs = multierr.Append(errs, fmt.Errorf("save webp image '%s': %w", photoID, err))
 			continue
 		}
 
 		if err = f.Close(); err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("close webp image: %w", err))
+			errs = multierr.Append(errs, fmt.Errorf("close webp image '%s': %w", photoID, err))
 			continue
 		}
 
@@ -95,7 +95,7 @@ func main() {
 	}
 
 	if errs != nil {
-		log.Fatalf("Multiple errors: %v", errs)
+		log.Printf("Multiple errors: %v\n", errs)
 	}
 
 	log.Println("Marshaling photos...")
