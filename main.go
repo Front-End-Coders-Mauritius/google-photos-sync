@@ -75,27 +75,27 @@ func main() {
 
 			img, err := imaging.Open(fullPhotoPath)
 			if err != nil {
-				return fmt.Errorf("open image '%s': %w", photoID, err)
+				return fmt.Errorf("open image '%s': %w", photoPath, err)
 			}
 
 			if err = os.MkdirAll(fullDstPhotoDir, os.ModePerm); err != nil {
-				return fmt.Errorf("create directory structure '%s': %w", photoID, err)
+				return fmt.Errorf("create directory structure '%s': %w", photoPath, err)
 			}
 
 			img = imaging.Fill(img, 1920, 1080, imaging.Center, imaging.Lanczos)
 
 			f, err := os.Create(fullProcessedPhotoPath)
 			if err != nil {
-				return fmt.Errorf("create webp image '%s': %w", photoID, err)
+				return fmt.Errorf("create webp image '%s': %w", photoPath, err)
 			}
 
 			if err = webpbin.Encode(f, img); err != nil {
 				f.Close()
-				return fmt.Errorf("save webp image '%s': %w", photoID, err)
+				return fmt.Errorf("save webp image '%s': %w", photoPath, err)
 			}
 
 			if err = f.Close(); err != nil {
-				return fmt.Errorf("close webp image '%s': %w", photoID, err)
+				return fmt.Errorf("close webp image '%s': %w", photoPath, err)
 			}
 
 			mu.Lock()
