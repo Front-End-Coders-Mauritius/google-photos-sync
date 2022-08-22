@@ -1,3 +1,5 @@
 timeliner.toml
 .vscode
 index.db
+.bin
+timeliner_repo/data

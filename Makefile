@@ -1,3 +1,6 @@
+add:
+	~/go/bin/timeliner add-account google_photos/front.end.coders.mu@gmail.com
+
 init:
 	~/go/bin/timeliner get-all google_photos/front.end.coders.mu@gmail.com
 
