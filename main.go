@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/disintegration/imaging"
 	_ "github.com/mattn/go-sqlite3"
@@ -40,6 +41,7 @@ func main() {
 	var (
 		photos = make(map[string][]string)
 		g      = new(errgroup.Group)
+		mu     sync.Mutex
 	)
 	log.Println("Looping over rows...")
 	for rows.Next() {
@@ -64,6 +66,10 @@ func main() {
 			fullProcessedPhotoPath := filepath.Join(fullDstPhotoDir, photoID+".webp")
 			if _, err = os.Stat(fullProcessedPhotoPath); err == nil {
 				// processed image exists so we skip processing it
+				mu.Lock()
+				photos[albumName] = append(photos[albumName], fullProcessedPhotoPath)
+				mu.Unlock()
+
 				return nil
 			}
 
@@ -92,7 +98,9 @@ func main() {
 				return fmt.Errorf("close webp image '%s': %w", photoID, err)
 			}
 
+			mu.Lock()
 			photos[albumName] = append(photos[albumName], fullProcessedPhotoPath)
+			mu.Unlock()
 
 			return nil
 		})
