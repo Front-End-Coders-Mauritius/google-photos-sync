@@ -2,4 +2,4 @@ timeliner.toml
 .vscode
 index.db
 .bin
-timeline_repo/data
+timeliner_repo/data
