@@ -1,4 +1,4 @@
-# Sync Photos fom Fronend Coders Google Albums
+# Sync Photos from Front-end Coders Google Albums
 
 The repo is the storage for our event albums. 
 It is meant to be consumed by [Front-End-Coders-Mauritius/meetup-fec-nuxt](https://github.com/Front-End-Coders-Mauritius/meetup-fec-nuxt) for frontend.mu
