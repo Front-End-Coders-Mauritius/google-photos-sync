@@ -46,7 +46,6 @@ func main() {
 		var (
 			albumName string
 			photoID   string
-			photoID   string
 			photoPath string
 		)
 		if err = rows.Scan(&albumName, &photoID, &photoPath); err != nil {
