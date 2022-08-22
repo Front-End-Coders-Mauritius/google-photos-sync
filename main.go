@@ -3,11 +3,16 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/disintegration/imaging"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/nickalie/go-webpbin"
+	"go.uber.org/multierr"
 )
 
 const timelinerRepo = "./timeliner_repo"
@@ -23,7 +28,7 @@ func main() {
 
 	log.Println("Quering database...")
 	rows, err := db.Query(`
-		select c.name, i.data_file from items i
+		select c.name, i.original_id, i.data_file from items i
 			inner join collection_items ci on ci.item_id = i.id
 			inner join collections c on ci.collection_id = c.id
 	`)
@@ -32,25 +37,65 @@ func main() {
 	}
 	defer rows.Close()
 
+	var errs error
 	log.Println("Looping over rows...")
 	photos := make(map[string][]string)
 	for rows.Next() {
 		var (
 			albumName string
+			photoID   string
 			photoPath string
 		)
-		if err = rows.Scan(&albumName, &photoPath); err != nil {
-			log.Fatal(err)
-		}
-
-		if _, err := os.Stat(timelinerRepo + "/" + photoPath); err != nil {
+		if err = rows.Scan(&albumName, &photoID, &photoPath); err != nil {
+			errs = multierr.Append(errs, fmt.Errorf("scan row: %w", err))
 			continue
 		}
 
-		photos[albumName] = append(photos[albumName], photoPath)
+		fullPhotoPath := filepath.Join(timelinerRepo, photoPath)
+		if _, err := os.Stat(fullPhotoPath); err != nil {
+			continue
+		}
+
+		img, err := imaging.Open(fullPhotoPath)
+		if err != nil {
+			errs = multierr.Append(errs, fmt.Errorf("open image: %w", err))
+			continue
+		}
+
+		fullDstPhotoDir := filepath.Dir(filepath.Join(timelinerRepo, "processed", photoPath))
+		if err := os.MkdirAll(fullDstPhotoDir, os.ModePerm); err != nil {
+			errs = multierr.Append(errs, fmt.Errorf("create directory structure: %w", err))
+			continue
+		}
+
+		img = imaging.Fill(img, 1920, 1080, imaging.Center, imaging.Lanczos)
+
+		fullProcessedPhotoPath := filepath.Join(fullDstPhotoDir, photoID+".webp")
+		f, err := os.Create(fullProcessedPhotoPath)
+		if err != nil {
+			errs = multierr.Append(errs, fmt.Errorf("create webp image: %w", err))
+			continue
+		}
+
+		if err := webpbin.Encode(f, img); err != nil {
+			f.Close()
+			errs = multierr.Append(errs, fmt.Errorf("save webp image: %w", err))
+			continue
+		}
+
+		if err := f.Close(); err != nil {
+			errs = multierr.Append(errs, fmt.Errorf("close webp image: %w", err))
+			continue
+		}
+
+		photos[albumName] = append(photos[albumName], fullProcessedPhotoPath)
 	}
 	if err = rows.Err(); err != nil {
 		log.Fatalf("Loop over rows: %v", err)
+	}
+
+	if errs != nil {
+		log.Fatalf("Multiple errors: %v", errs)
 	}
 
 	log.Println("Marshaling photos...")
