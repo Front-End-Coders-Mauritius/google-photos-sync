@@ -38,6 +38,9 @@ func main() {
 	}
 	defer rows.Close()
 
+	// will force download of any webp binary
+	webpbin.NewCWebP().BinWrapper.Run()
+
 	var (
 		photos = make(map[string][]string)
 		g      = new(errgroup.Group)
