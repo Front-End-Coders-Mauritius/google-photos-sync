@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"image"
 	"io/ioutil"
 	"log"
 	"os"
@@ -88,7 +90,9 @@ func main() {
 
 			img, err := imaging.Open(fullPhotoPath)
 			if err != nil {
-				errs = multierr.Append(errs, fmt.Errorf("open image '%s': %w", photoPath, err))
+				if !errors.Is(err, image.ErrFormat) {
+					errs = multierr.Append(errs, fmt.Errorf("open image '%s': %w", photoPath, err))
+				}
 
 				return
 			}
