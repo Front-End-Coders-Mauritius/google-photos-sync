@@ -99,16 +99,11 @@ func main() {
 				return
 			}
 
-			bg := imaging.Clone(img)
-			bg = imaging.Fill(bg, 1920, 1080, imaging.Center, imaging.Lanczos)
-			bg = imaging.Blur(bg, 5)
-
 			if img.Bounds().Dx() >= img.Bounds().Dy() {
 				img = imaging.Resize(img, 1920, 0, imaging.Lanczos)
 			} else {
 				img = imaging.Resize(img, 0, 1080, imaging.Lanczos)
 			}
-			img = imaging.PasteCenter(bg, img)
 
 			f, err := os.Create(fullProcessedPhotoPath)
 			if err != nil {
