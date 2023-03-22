@@ -1,0 +1,5 @@
+[oauth2.providers.google]
+client_id = "xxx"
+client_secret = "xxx"
+auth_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://accounts.google.com/o/oauth2/token"

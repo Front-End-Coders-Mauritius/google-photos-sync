@@ -5,6 +5,18 @@ It is meant to be consumed by [Front-End-Coders-Mauritius/meetup-fec-nuxt](https
 
 The script is run locally and maintained by [sandeep@ramgolam.com](https://github.com/MrSunshyne)
 
+# MAKE SURE YOU HAVE `timerliner.toml` in the root directory. 
+
+It should contain: 
+
+```
+[oauth2.providers.google]
+client_id = "xxx"
+client_secret = "xxx"
+auth_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://accounts.google.com/o/oauth2/token"
+```
+
 ## Commands 
 
 `make init` get all photos from all albums in the fec google account
