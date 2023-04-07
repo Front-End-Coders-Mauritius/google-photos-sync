@@ -1,7 +1,7 @@
 # Sync Photos from Front-end Coders Google Albums
 
 The repo is the storage for our event albums. 
-It is meant to be consumed by [Front-End-Coders-Mauritius/meetup-fec-nuxt](https://github.com/Front-End-Coders-Mauritius/meetup-fec-nuxt) for frontend.mu
+It is meant to be consumed by [Front-End-Coders-Mauritius/frontendmu-astro](https://github.com/Front-End-Coders-Mauritius/frontendmu-astro) for frontend.mu
 
 The script is run locally and maintained by [sandeep@ramgolam.com](https://github.com/MrSunshyne)
 
