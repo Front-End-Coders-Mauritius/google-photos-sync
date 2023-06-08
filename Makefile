@@ -4,7 +4,7 @@ add:
 init:
 	~/go/bin/timeliner get-all google_photos/front.end.coders.mu@gmail.com
 
-reauth:
+auth:
 	~/go/bin/timeliner reauth google_photos/front.end.coders.mu@gmail.com
 
 sync:
